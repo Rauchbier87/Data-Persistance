@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,7 +13,6 @@ public class CanvasMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //PlayerName = (TMP_InputField)GameObject.Find("Canvas").GetComponent("Name");
         nameManager = GameObject.Find("NameHolder").GetComponent<NameManager>();
     }
 
@@ -27,5 +27,31 @@ public class CanvasMenu : MonoBehaviour
     {
         nameManager.playerName = saveName;
         SceneManager.LoadScene(1);
+    }
+
+    public void Quit()
+    {
+#if UNTIY_STANDALONE
+        Application.Quit();
+#else
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
+
+    [System.Serializable]
+    class SaveScore
+    {
+        public string nameHigh;
+        public int pointHigh;
+    }
+
+    public void ResetHigh()
+    {
+        SaveScore data = new SaveScore();
+
+        data.nameHigh = "";
+        data.pointHigh = 0;
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "savefile.json", json);
     }
 }

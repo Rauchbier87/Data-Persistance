@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text bestScore;
+    public TMP_InputField tMP_Inputfield;
     public GameObject GameOverText;
     public Text PlayerText;
     public NameManager nameManager;
@@ -21,8 +24,8 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    public string nameHigh;
-    public int pointHigh;
+    private string nameHigh;
+    private int pointHigh;
 
     
     // Start is called before the first frame update
@@ -47,6 +50,11 @@ public class MainManager : MonoBehaviour
             }
         }
         LoadHigh();
+        if (nameHigh.Equals("")) 
+        {
+            bestScore.text = "High Score: ";
+        }
+        else { bestScore.text = "High Score: " + nameHigh + "- " + pointHigh; }
     }
 
     private void Update()
@@ -81,7 +89,9 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+//call savehigh() and enter name if high score-----------------------------
         m_GameOver = true;
+        SaveHigh();
         GameOverText.SetActive(true);
     }
 
@@ -96,14 +106,15 @@ public class MainManager : MonoBehaviour
     {
         SaveScore data = new SaveScore();
 
-        //code to save only if greater than current
-        if (m_Points > pointHigh)
-        {
-            data.nameHigh = nameHigh;
-            data.pointHigh = pointHigh;
-            string json = JsonUtility.ToJson(data);
-            File.WriteAllText(Application.persistentDataPath + "savefile.json", json);
-        }
+//save only if greater than current      
+            if (m_Points > pointHigh)
+            {
+//code to get player name to save
+                data.nameHigh = nameManager.playerName;
+                data.pointHigh = m_Points;
+                string json = JsonUtility.ToJson(data);
+                File.WriteAllText(Application.persistentDataPath + "savefile.json", json);
+            }
     }
 
     public void LoadHigh()
@@ -116,5 +127,10 @@ public class MainManager : MonoBehaviour
             nameHigh = data.nameHigh;
             pointHigh = data.pointHigh;
         }
+    }
+
+    public void Menu()
+    {
+        SceneManager.LoadScene(0); 
     }
 }
