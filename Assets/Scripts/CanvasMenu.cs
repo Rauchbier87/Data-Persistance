@@ -34,7 +34,7 @@ public class CanvasMenu : MonoBehaviour
 #if UNTIY_STANDALONE
         Application.Quit();
 #else
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false; //find out why this wont compile----------
 #endif
     }
 
