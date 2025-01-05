@@ -11,6 +11,7 @@ public class MainManager : MonoBehaviour
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
+    public GameObject BallModel;
 
     public Text ScoreText;
     public Text bestScore;
@@ -26,7 +27,7 @@ public class MainManager : MonoBehaviour
 
     private string nameHigh;
     private int pointHigh;
-
+    public int brickNum = 36;
     
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,7 @@ public class MainManager : MonoBehaviour
         //null reference below-----------------------------------------
         PlayerText = GameObject.Find("PlayerText").GetComponent<Text>();
         nameManager = GameObject.Find("NameHolder").GetComponent<NameManager>();
+
         PlayerText.text += " " + nameManager.playerName;
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -59,6 +61,11 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        if (brickNum == 0) //bricks not accurately detected when hit-----------------------
+        {
+            GameOver();
+            Destroy(BallModel);
+        }
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
